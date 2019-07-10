@@ -7,8 +7,8 @@ Created on Sun Nov 04 12:08:55 2018
 
 # some questions:
 # unsupervied algorithms, different from KNN
-# 1)how to choose k for KNN: Elbow Method, We run the algorithm for different values of K
-#   and plot the K values against SSE(Sum of Squared Errors)
+# 1)how to choose k for kmeans: Elbow Method, We run the algorithm for different values of K
+#   and plot the K values against SSE(Sum of Squared Errors), the error here is the distance from the group center to points in the group
 #   SSE=\sum_{1}{k}\sum_{x in C_i} dist^2(m_i,x)
 #   distortions.append(sum(np.min(cdist(kmeans_train, kmeanModel.cluster_centers_, 'euclidean'), axis=1)) / kmeans_train.shape[0])
 
@@ -28,15 +28,19 @@ Created on Sun Nov 04 12:08:55 2018
 from copy import deepcopy
 import numpy as np
 import pandas as pd
+from sklearn.datasets.samples_generator import make_blobs
 from matplotlib import pyplot as plt
 # we can use ggplot style
 plt.style.use('ggplot')
-data=pd.read_csv('E:/project/algorithm implementation/xclara_kmeans.csv')
 
 # plot
 # 定义X,改数据格式
-f1 = data['V1'].values
-f2 = data['V2'].values
+# random generate 3 classes of data
+data,label = make_blobs(n_samples=100, n_features=2, centers=3, shuffle=True, random_state=0)
+data[:,0]
+
+f1 = data[:,0]
+f2 = data[:,1]
 X = np.array(list(zip(f1, f2)))
 plt.scatter(f1, f2, c='black', s=7)
 
@@ -49,10 +53,10 @@ def dist(a, b, ax=1):
 k = 3
 # 生成在半开半闭区间[low,high)上离散均匀分布的整数值
 # X coordinates of random centroids
-C_x = np.random.randint(0, 80, size=k)
+C_x = np.random.randint(min(f1), max(f1), size=k)
 # Y coordinates of random centroids
-C_y = np.random.randint(-20, 70, size=k)
-C = np.array(zip(C_x, C_y), dtype=np.float32)
+C_y = np.random.randint(min(f2), max(f2), size=k)
+C = np.array(list(zip(C_x, C_y)), dtype=np.float32)
 print(C)
 
 # Plotting along with the Centroids
@@ -90,5 +94,5 @@ for i in range(k):
         ax.scatter(points[:, 0], points[:, 1], s=7, c=colors[i])
 ax.scatter(C[:, 0], C[:, 1], marker='*', s=200, c='#050505')
 
-
+C
 
